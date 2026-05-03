@@ -84,8 +84,14 @@
             transform: translateY(0);
         }
 
-        .project-card:hover .project-image {
-            transform: scale(1.05);
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
         }
 
         /* Hide scrollbar but keep functionality */
@@ -98,6 +104,10 @@
         ::-webkit-scrollbar-thumb {
             background: #222;
             border-radius: 10px;
+        }
+        
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
@@ -188,28 +198,33 @@
                         <span className="text-sm font-black tracking-[0.3em] uppercase group-hover:text-blue-500 transition-colors">Gopal Bajpai</span>
                     </div>
                     <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold uppercase tracking-widest text-gray-400">
-                        <a href="#work" className="hover:text-white transition-colors">Projects</a>
                         <a href="#about" className="hover:text-white transition-colors">About</a>
-                        <a href="#clients" className="hover:text-white transition-colors">Experience</a>
+                        <a href="#reels" className="hover:text-white transition-colors">Reel Mastery</a>
+                        <a href="#skills" className="hover:text-white transition-colors">Skills</a>
                         <a href="https://wa.me/919997036033" className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:-translate-y-0.5">Let's Collaborate</a>
                     </div>
                 </div>
             </nav>
         );
 
-        const ProjectCard = ({ title, category, image, delay }) => (
-            <div className={`reveal project-card group relative aspect-video rounded-3xl overflow-hidden glass transition-all duration-700 delay-${delay}`}>
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-all duration-500 z-10" />
-                <img 
-                    src={image || `https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800`} 
-                    alt={title} 
-                    className="project-image w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
-                />
-                <div className="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2">{category}</p>
-                    <h3 className="text-2xl font-black">{title}</h3>
+        const ReelLinkCard = ({ link, title, category, delay }) => (
+            <a 
+                href={link} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={`reveal glass p-6 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all duration-500 delay-${delay}`}
+            >
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                        <i data-lucide="play" className="w-5 h-5 fill-current"></i>
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{category}</p>
+                        <h4 className="font-bold text-sm leading-tight group-hover:text-blue-400 transition-colors">{title}</h4>
+                    </div>
                 </div>
-            </div>
+                <i data-lucide="external-link" className="w-4 h-4 text-gray-700 group-hover:text-white transition-colors"></i>
+            </a>
         );
 
         const App = () => {
@@ -227,7 +242,7 @@
                 };
                 
                 window.addEventListener('scroll', handleScroll);
-                handleScroll(); // Initial check
+                handleScroll();
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
@@ -237,7 +252,27 @@
                 { label: "Experience", value: "Since 2023" }
             ];
 
-            const tools = ["Premiere Pro", "After Effects", "DaVinci Resolve", "Photoshop", "CapCut Pro"];
+            const tools = [
+                { name: "Adobe Premiere Pro", icon: "video", color: "text-blue-400" },
+                { name: "After Effects", icon: "layers", color: "text-purple-500" },
+                { name: "DaVinci Resolve", icon: "film", color: "text-orange-400" },
+                { name: "Photoshop", icon: "image", color: "text-blue-600" },
+                { name: "CapCut Pro", icon: "scissors", color: "text-white" },
+                { name: "Filmora", icon: "camera", color: "text-green-400" }
+            ];
+
+            const reelProjects = [
+                { title: "Bhaarat", category: "Cinematic Narrative", link: "https://www.instagram.com/reel/DR03rI7kgQF/" },
+                { title: "Ring Ceremony", category: "Event Highlights", link: "https://www.instagram.com/reel/DPdg3ZqE8Ti/" },
+                { title: "Paan Kunwar School Edit", category: "Educational Series", link: "https://www.instagram.com/reel/DXVabjWEi5W/" },
+                { title: "Free Fire Events", category: "Gaming Montage", link: "https://www.instagram.com/reel/DXmb2unAYWX/" },
+                { title: "Hotel Promotional Video", category: "Commercial", link: "https://www.instagram.com/reel/DW-pgz2kULc/" },
+                { title: "Cinematic Model Shoot", category: "Fashion & Motion", link: "https://www.instagram.com/reel/DT-CVLVgQh0/" },
+                { title: "School Memory Edit", category: "Lifestyle Vlog", link: "https://www.instagram.com/reel/DTHzI41kxRP/" },
+                { title: "Cinematic Dipawali Edit", category: "Seasonal Special", link: "https://www.instagram.com/reel/DQAgXNakxAA/" },
+                { title: "Sweet Special Edits", category: "Creative Highlight", link: "https://www.instagram.com/reel/DWvAMppgRbK/" },
+                { title: "Brij Mithas Promo", category: "Business Spotlight", link: "https://www.instagram.com/reel/DQ5u5-iEpeR/" }
+            ];
 
             return (
                 <div className="selection:bg-blue-500/30">
@@ -262,8 +297,8 @@
                                     I am <span className="text-white">Gopal Bajpai</span>. Since 2023, I have been honing my craft in videography and editing, turning complex narratives into cinematic reality.
                                 </p>
                                 <div className="flex flex-wrap gap-5">
-                                    <a href="#work" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
-                                        View Portfolio <i data-lucide="arrow-right" className="w-5 h-5"></i>
+                                    <a href="#reels" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
+                                        View Reel Mastery <i data-lucide="arrow-right" className="w-5 h-5"></i>
                                     </a>
                                     <div className="flex -space-x-3 items-center">
                                         {[
@@ -303,7 +338,54 @@
                         </div>
                     </section>
 
-                    {/* Stats */}
+                    {/* About Section */}
+                    <section id="about" className="py-32 relative overflow-hidden">
+                        <div className="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-20 items-center">
+                            <div className="reveal">
+                                <div className="flex items-center gap-3 mb-8">
+                                    <div className="w-12 h-[1px] bg-blue-500"></div>
+                                    <span className="text-xs font-black uppercase tracking-[0.4em] text-blue-500">My Story</span>
+                                </div>
+                                <h2 className="text-5xl md:text-6xl font-black mb-8 leading-[1.1]">FROM CURIOSITY <br/>TO <span className="text-gradient">CREATION.</span></h2>
+                                <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+                                    <p>
+                                        My journey into the world of pixels and pacing began in late 2023. It wasn't a planned career path—it was sparked by pure <span className="text-white font-bold italic">curiosity</span> while watching creators work offline.
+                                    </p>
+                                    <p>
+                                        What started as simple observation quickly turned into a joyful, high-energy ride. I dove headfirst into the field, navigating the inevitable ups and downs with a passion for every cut, color, and keyframe.
+                                    </p>
+                                    <p>
+                                        Today, I collaborate with <span className="text-white font-bold">agencies</span>, craft visual identities for <span className="text-white font-bold">restaurants</span>, and have had the incredible opportunity to work within the <span className="text-white font-bold">Free Fire community</span> and the "Gram App" creators. Every project is a new opportunity to turn a "joyful ride" into a professional masterpiece.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="reveal delay-200">
+                                <div className="relative p-10 glass rounded-[3rem] border border-white/5">
+                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 blur-[80px] rounded-full floating"></div>
+                                    <h3 className="text-2xl font-black mb-10 flex items-center gap-4">
+                                        <i data-lucide="compass" className="text-blue-500"></i> Milestones
+                                    </h3>
+                                    <div className="space-y-8">
+                                        {[
+                                            { year: "2023", title: "The Spark", desc: "First offline inspiration and start of the self-taught journey." },
+                                            { year: "2024", title: "Global Reach", desc: "Collaborating with FF Community and restaurant agencies." },
+                                            { year: "Future", title: "Visual Legacy", desc: "Continuously pushing boundaries in high-retention storytelling." }
+                                        ].map((milestone, i) => (
+                                            <div key={i} className="flex gap-6 group">
+                                                <div className="text-blue-500 font-black text-sm pt-1">{milestone.year}</div>
+                                                <div>
+                                                    <h4 className="font-bold text-lg mb-1 group-hover:text-blue-400 transition-colors">{milestone.title}</h4>
+                                                    <p className="text-gray-500 text-sm">{milestone.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Stats Section */}
                     <section className="py-20 border-y border-white/5 bg-white/[0.01]">
                         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
                             {stats.map((stat, i) => (
@@ -315,40 +397,46 @@
                         </div>
                     </section>
 
-                    {/* Projects Section */}
-                    <section id="work" className="py-32">
+                    {/* Short-Form / Reels Section */}
+                    <section id="reels" className="py-32 bg-white/[0.01]">
                         <div className="max-w-7xl mx-auto px-8">
                             <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
                                 <div className="reveal">
-                                    <h2 className="text-5xl md:text-6xl font-black mb-6">SELECTED <br/><span className="text-gradient">WORKS.</span></h2>
-                                    <p className="text-gray-400 max-w-md">A showcase of commercial projects, high-energy edits, and cinematic storytelling.</p>
+                                    <h2 className="text-5xl md:text-6xl font-black mb-6">REEL <br/><span className="text-gradient">MASTERY.</span></h2>
+                                    <p className="text-gray-400 max-w-md">High-retention vertical content engineered for social engagement and visual rhythm.</p>
                                 </div>
                                 <div className="flex gap-4 reveal">
-                                    <button className="px-6 py-3 rounded-full border border-white/10 hover:border-white/40 transition-colors text-sm font-bold">Showreel 2024</button>
+                                    <div className="px-6 py-3 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 text-xs font-black uppercase tracking-[0.2em]">
+                                        Full Showcase
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-8">
-                                <ProjectCard title="Rapyd Launch Promo" category="Startup Marketing" delay="0" />
-                                <ProjectCard title="Cinematic Wedding Recap" category="Event Highlights" delay="100" />
-                                <ProjectCard title="Educational Series" category="SPS Global School" delay="200" />
-                                <ProjectCard title="Brand Storytelling" category="Corporate Identity" delay="300" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {reelProjects.map((project, i) => (
+                                    <ReelLinkCard key={i} link={project.link} title={project.title} category={project.category} delay={i * 50} />
+                                ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* Skills & Tools */}
-                    <section className="py-32 bg-gradient-soft">
+                    {/* Skills & Tools Section */}
+                    <section id="skills" className="py-32 bg-gradient-soft">
                         <div className="max-w-7xl mx-auto px-8">
                             <div className="grid lg:grid-cols-2 gap-20 items-center">
                                 <div className="reveal">
-                                    <h2 className="text-5xl font-black mb-8 leading-tight">THE POWER <br/>BEHIND THE <span className="text-blue-500">CUT.</span></h2>
+                                    <h2 className="text-5xl font-black mb-8 leading-tight">TECHNICAL <br/>POWER <span className="text-blue-500">STACK.</span></h2>
                                     <p className="text-gray-400 text-lg mb-12 leading-relaxed">
-                                        I utilize the industry's most powerful tools to ensure every frame is polished, every transition is purposeful, and every color is calibrated for maximum impact.
+                                        Over the course of my journey, I've mastered a suite of professional tools. From quick high-impact edits in CapCut to complex motion graphics in After Effects.
                                     </p>
-                                    <div className="flex flex-wrap gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
                                         {tools.map((tool, i) => (
-                                            <span key={i} className="px-6 py-3 rounded-xl glass text-sm font-bold text-gray-300">{tool}</span>
+                                            <div key={i} className="flex items-center gap-4 glass p-4 rounded-2xl hover:border-blue-500/30 transition-all group">
+                                                <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 ${tool.color}`}>
+                                                    <i data-lucide={tool.icon} className="w-5 h-5"></i>
+                                                </div>
+                                                <span className="font-bold text-sm">{tool.name}</span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
@@ -357,24 +445,24 @@
                                         <div className="p-8 rounded-3xl glass border-t border-blue-500/20">
                                             <i data-lucide="zap" className="text-blue-500 w-10 h-10 mb-6"></i>
                                             <h4 className="text-xl font-bold mb-2">High Retention</h4>
-                                            <p className="text-sm text-gray-500">Editing specifically designed for social media algorithms.</p>
+                                            <p className="text-sm text-gray-500">Fast-paced editing designed for social algorithms.</p>
                                         </div>
                                         <div className="p-8 rounded-3xl glass">
                                             <i data-lucide="layers" className="text-purple-500 w-10 h-10 mb-6"></i>
                                             <h4 className="text-xl font-bold mb-2">Color Grading</h4>
-                                            <p className="text-sm text-gray-500">Professional cinematic looks tailored to your brand mood.</p>
+                                            <p className="text-sm text-gray-500">Cinematic looks tailored to your unique mood.</p>
                                         </div>
                                     </div>
                                     <div className="space-y-6 mt-12">
                                         <div className="p-8 rounded-3xl glass">
                                             <i data-lucide="music" className="text-pink-500 w-10 h-10 mb-6"></i>
                                             <h4 className="text-xl font-bold mb-2">Sound Design</h4>
-                                            <p className="text-sm text-gray-500">Deep atmospheric soundscapes and rhythmic beat-matching.</p>
+                                            <p className="text-sm text-gray-500">Atmospheric soundscapes and rhythmic matching.</p>
                                         </div>
                                         <div className="p-8 rounded-3xl glass border-t border-green-500/20">
                                             <i data-lucide="video" className="text-green-500 w-10 h-10 mb-6"></i>
                                             <h4 className="text-xl font-bold mb-2">4K Delivery</h4>
-                                            <p className="text-sm text-gray-500">Highest quality export standards for all digital platforms.</p>
+                                            <p className="text-sm text-gray-500">Highest quality export standards for all platforms.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -415,7 +503,6 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
-        // Initialize icons after React render
         setTimeout(() => {
             if (window.lucide) window.lucide.createIcons();
         }, 100);
