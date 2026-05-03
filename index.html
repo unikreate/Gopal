@@ -234,7 +234,7 @@
             const stats = [
                 { label: "Projects Completed", value: "150+" },
                 { label: "Global Clients", value: "12+" },
-                { label: "Years Experience", value: "03+" }
+                { label: "Experience", value: "Since 2023" }
             ];
 
             const tools = ["Premiere Pro", "After Effects", "DaVinci Resolve", "Photoshop", "CapCut Pro"];
@@ -259,19 +259,23 @@
                                     <span className="text-gradient">STORIES.</span>
                                 </h1>
                                 <p className="text-xl text-gray-400 max-w-lg mb-10 leading-relaxed font-medium">
-                                    I am <span className="text-white">Gopal Bajpai</span>, a specialized video editor dedicated to turning complex narratives into cinematic reality.
+                                    I am <span className="text-white">Gopal Bajpai</span>. Since 2023, I have been honing my craft in videography and editing, turning complex narratives into cinematic reality.
                                 </p>
                                 <div className="flex flex-wrap gap-5">
                                     <a href="#work" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
                                         View Portfolio <i data-lucide="arrow-right" className="w-5 h-5"></i>
                                     </a>
                                     <div className="flex -space-x-3 items-center">
-                                        {[1,2,3,4].map(i => (
+                                        {[
+                                            { src: "IMG_3544.jpg", alt: "Client 1" },
+                                            { src: "IMG_3543.PNG", alt: "Client 2" },
+                                            { src: "IMG_3547.PNG", alt: "Client 3" }
+                                        ].map((img, i) => (
                                             <div key={i} className="w-10 h-10 rounded-full border-2 border-[#050505] bg-gray-800 overflow-hidden">
-                                                <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="client" />
+                                                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
                                             </div>
                                         ))}
-                                        <span className="pl-6 text-sm text-gray-400 font-bold">Trusted by 50+ Creators</span>
+                                        <span className="pl-6 text-sm text-gray-400 font-bold">Trusted by 20+ Creators</span>
                                     </div>
                                 </div>
                             </div>
@@ -385,8 +389,8 @@
                                 <h2 className="text-6xl md:text-8xl font-black mb-12 leading-[0.9] tracking-tighter">
                                     LET'S BUILD <br/>YOUR <span className="text-blue-500">LEGACY.</span>
                                 </h2>
-                                <a href="https://wa.me/919997036033" className="inline-flex items-center gap-4 text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all group">
-                                    hello@gopalbajpai.com 
+                                <a href="mailto:gopalbajpai509@gmail.com" className="inline-flex items-center gap-4 text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all group">
+                                    gopalbajpai509@gmail.com 
                                     <i data-lucide="arrow-up-right" className="w-10 h-10 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform"></i>
                                 </a>
                             </div>
@@ -394,11 +398,11 @@
                             <div className="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-white/5 gap-8">
                                 <div className="text-center md:text-left">
                                     <p className="text-xs font-black uppercase tracking-[0.5em] text-gray-600 mb-2">Based in Jaswantnagar, IN</p>
-                                    <p className="text-lg font-bold">Gopal Bajpai &copy; 2024</p>
+                                    <p className="text-lg font-bold">Gopal Bajpai &copy;</p>
                                 </div>
                                 <div className="flex gap-8">
-                                    <a href="https://www.instagram.com/avg.g0pal" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="instagram" className="w-6 h-6"></i></a>
-                                    <a href="https://wa.me/919997036033" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="message-circle" className="w-6 h-6"></i></a>
+                                    <a href="https://www.instagram.com/avg.g0pal" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="instagram" className="w-6 h-6"></i></a>
+                                    <a href="https://wa.me/919997036033" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="message-circle" className="w-6 h-6"></i></a>
                                     <a href="#" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="linkedin" className="w-6 h-6"></i></a>
                                 </div>
                             </div>
