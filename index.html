@@ -3,269 +3,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gopal Bajpai | Video Editor Portfolio</title>
-    <!-- Tailwind CSS -->
+    <title>Gopal Bajpai | Cinematic Video Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React & Babel for Browser Rendering -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
-        .text-gradient { background: linear-gradient(to right, #3b82f6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        html { scroll-behavior: smooth; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --brand-blue: #3b82f6;
+            --brand-purple: #8b5cf6;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #050505; 
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none; 
+        }
+
+        a, button, [role="button"] { cursor: none; }
+
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(12px); 
+        }
+
+        .text-gradient { 
+            background: linear-gradient(135deg, #60a5fa, #a78bfa); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+
+        .bg-gradient-soft {
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .reel-spinning {
+            animation: spin var(--spin-speed, 2s) linear infinite;
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            border-radius: 50%;
+        }
+
+        #vintage-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        /* Hide scrollbar but keep functionality */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef, useMemo } = React;
 
-        // Custom Icon Component to handle Lucide in CDN
-        const Icon = ({ name, className = "w-6 h-6" }) => {
+        const JollyCursor = () => {
+            const [position, setPosition] = useState({ x: -100, y: -100 });
+            const [isPointer, setIsPointer] = useState(false);
+            const [isMouseDown, setIsMouseDown] = useState(false);
+            const [scrollSpeed, setScrollSpeed] = useState(2);
+            const lastScrollY = useRef(0);
+
             useEffect(() => {
-                if (window.lucide) window.lucide.createIcons();
+                const handleMove = (e) => {
+                    setPosition({ x: e.clientX, y: e.clientY });
+                    const target = e.target;
+                    setIsPointer(
+                        window.getComputedStyle(target).cursor === 'pointer' || 
+                        ['A', 'BUTTON', 'INPUT'].includes(target.tagName) ||
+                        target.closest('a') || target.closest('button')
+                    );
+                    if (Math.random() > 0.7) createParticle(e.clientX, e.clientY);
+                };
+
+                const handleScroll = () => {
+                    const delta = Math.abs(window.scrollY - lastScrollY.current);
+                    setScrollSpeed(Math.max(0.1, 2 - (delta / 40)));
+                    lastScrollY.current = window.scrollY;
+                    setTimeout(() => setScrollSpeed(2), 150);
+                };
+
+                const createParticle = (x, y) => {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    const size = Math.random() * 3 + 1;
+                    p.style.width = `${size}px`;
+                    p.style.height = `${size}px`;
+                    p.style.left = `${x}px`;
+                    p.style.top = `${y}px`;
+                    p.style.background = Math.random() > 0.5 ? '#3b82f6' : '#ffffff';
+                    document.body.appendChild(p);
+                    p.animate([
+                        { transform: 'translate(0,0) scale(1)', opacity: 0.6 },
+                        { transform: `translate(${(Math.random()-0.5)*40}px, ${(Math.random()-0.5)*40}px) scale(0)`, opacity: 0 }
+                    ], { duration: 600 }).onfinish = () => p.remove();
+                };
+
+                window.addEventListener('mousemove', handleMove);
+                window.addEventListener('scroll', handleScroll);
+                window.addEventListener('mousedown', () => setIsMouseDown(true));
+                window.addEventListener('mouseup', () => setIsMouseDown(false));
+                
+                return () => {
+                    window.removeEventListener('mousemove', handleMove);
+                    window.removeEventListener('scroll', handleScroll);
+                };
             }, []);
-            return <i data-lucide={name} className={className}></i>;
+
+            return (
+                <div id="vintage-cursor" style={{ 
+                    transform: `translate(${position.x - 30}px, ${position.y - 30}px) scale(${isMouseDown ? 0.8 : (isPointer ? 1.3 : 1)})`,
+                    '--spin-speed': `${scrollSpeed}s`
+                }}>
+                    <svg viewBox="0 0 100 100" className="w-full h-full fill-white drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]">
+                        <rect x="25" y="45" width="45" height="30" rx="3" />
+                        <path d="M70 50 L85 40 L85 80 L70 70 Z" />
+                        <g className="reel-spinning" style={{ transformOrigin: '38px 32px' }}>
+                            <circle cx="38" cy="32" r="16" fill="none" stroke="white" strokeWidth="2" strokeDasharray="4 2" />
+                            <circle cx="38" cy="32" r="3" />
+                        </g>
+                        <g className="reel-spinning" style={{ transformOrigin: '62px 36px' }}>
+                            <circle cx="62" cy="36" r="12" fill="none" stroke="white" strokeWidth="2" strokeDasharray="3 2" />
+                            <circle cx="62" cy="36" r="2" />
+                        </g>
+                    </svg>
+                </div>
+            );
         };
+
+        const Nav = ({ scrolled }) => (
+            <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'py-4 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5' : 'py-8 bg-transparent'}`}>
+                <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
+                    <div className="group">
+                        <span className="text-sm font-black tracking-[0.3em] uppercase group-hover:text-blue-500 transition-colors">Gopal Bajpai</span>
+                    </div>
+                    <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold uppercase tracking-widest text-gray-400">
+                        <a href="#work" className="hover:text-white transition-colors">Projects</a>
+                        <a href="#about" className="hover:text-white transition-colors">About</a>
+                        <a href="#clients" className="hover:text-white transition-colors">Experience</a>
+                        <a href="https://wa.me/919997036033" className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:-translate-y-0.5">Let's Collaborate</a>
+                    </div>
+                </div>
+            </nav>
+        );
+
+        const ProjectCard = ({ title, category, image, delay }) => (
+            <div className={`reveal project-card group relative aspect-video rounded-3xl overflow-hidden glass transition-all duration-700 delay-${delay}`}>
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-all duration-500 z-10" />
+                <img 
+                    src={image || `https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800`} 
+                    alt={title} 
+                    className="project-image w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
+                />
+                <div className="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2">{category}</p>
+                    <h3 className="text-2xl font-black">{title}</h3>
+                </div>
+            </div>
+        );
 
         const App = () => {
             const [scrolled, setScrolled] = useState(false);
-            const whatsappUrl = "https://wa.me/919997036033";
 
             useEffect(() => {
-                const handleScroll = () => setScrolled(window.scrollY > 50);
+                const handleScroll = () => {
+                    setScrolled(window.scrollY > 50);
+                    
+                    const reveals = document.querySelectorAll('.reveal');
+                    reveals.forEach(el => {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < window.innerHeight * 0.9) el.classList.add('visible');
+                    });
+                };
+                
                 window.addEventListener('scroll', handleScroll);
-                if (window.lucide) window.lucide.createIcons();
+                handleScroll(); // Initial check
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            const clients = [
-                {
-                    name: "Rapyd Launch",
-                    link: "https://www.instagram.com/rapydlaunch",
-                    type: "Startup & Marketing",
-                    description: "Crafting high-retention promotional videos for fast-growing digital brands."
-                },
-                {
-                    name: "Ganglas Events",
-                    link: "https://www.instagram.com/ganglasevents",
-                    type: "Event Cinematography",
-                    description: "Editing cinematic event highlights and high-energy social recaps."
-                },
-                {
-                    name: "SPS Global School",
-                    link: "https://www.instagram.com/sps_global_school",
-                    type: "Educational Content",
-                    description: "Produced high-quality promotional and event coverage videos."
-                },
-                {
-                    name: "WebWrite Services",
-                    link: "https://www.instagram.com/webwriteservices",
-                    type: "Corporate & Digital",
-                    description: "Edited professional service showcases and brand storytelling clips."
-                }
+            const stats = [
+                { label: "Projects Completed", value: "150+" },
+                { label: "Global Clients", value: "12+" },
+                { label: "Years Experience", value: "03+" }
             ];
 
-            const services = [
-                { title: "Commercial Ads", icon: "monitor" },
-                { title: "Social Media Reels", icon: "video" },
-                { title: "Cinematic Editing", icon: "film" },
-                { title: "Color Grading", icon: "award" }
-            ];
+            const tools = ["Premiere Pro", "After Effects", "DaVinci Resolve", "Photoshop", "CapCut Pro"];
 
             return (
-                <div className="min-h-screen text-white selection:bg-blue-500/30">
-                    {/* Navigation */}
-                    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0a0a]/80 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-6'}`}>
-                        <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                                <span className="uppercase tracking-[0.2em] text-sm font-black text-white hover:text-blue-500 transition-colors cursor-default">
-                                    Gopal Bajpai
-                                </span>
-                            </div>
-                            <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400">
-                                <a href="#work" className="hover:text-white transition-colors">Work</a>
-                                <a href="#clients" className="hover:text-white transition-colors">Clients</a>
-                                <a href="https://www.instagram.com/avg.g0pal" target="_blank" className="hover:text-white transition-colors">Instagram</a>
-                            </div>
-                            <a href={whatsappUrl} target="_blank" className="bg-white text-black px-5 py-2 rounded-full text-sm font-bold hover:bg-green-500 hover:text-white transition-all transform hover:scale-105 shadow-lg shadow-white/5 flex items-center gap-2">
-                                <Icon name="message-circle" className="w-4 h-4" /> Let's Talk
-                            </a>
-                        </div>
-                    </nav>
+                <div className="selection:bg-blue-500/30">
+                    <JollyCursor />
+                    <Nav scrolled={scrolled} />
 
                     {/* Hero Section */}
-                    <section className="relative pt-32 pb-20 overflow-hidden">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
-                            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full"></div>
-                            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full"></div>
-                        </div>
-
-                        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-                            <div className="relative z-10">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-blue-400 mb-6">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                                    </span>
-                                    Available for new projects
+                    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+                        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full" />
+                        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full" />
+                        
+                        <div className="max-w-7xl mx-auto px-8 w-full grid lg:grid-cols-2 gap-16 items-center">
+                            <div className="reveal visible">
+                                <div className="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs font-bold uppercase tracking-widest mb-8">
+                                    Available for freelance
                                 </div>
-                                <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-6 leading-[0.9]">
-                                    Visual <br />
-                                    <span className="text-gradient italic">Storyteller.</span>
+                                <h1 className="text-7xl md:text-8xl lg:text-9xl font-black leading-[0.85] tracking-tighter mb-8">
+                                    CRAFTING <br />
+                                    <span className="text-gradient">STORIES.</span>
                                 </h1>
-                                <p className="text-gray-400 text-lg md:text-xl max-w-md mb-8 leading-relaxed">
-                                    I am <span className="text-white font-bold">Gopal Bajpai</span>. I turn raw footage into cinematic experiences. Expert in pacing, color, and high-retention editing.
+                                <p className="text-xl text-gray-400 max-w-lg mb-10 leading-relaxed font-medium">
+                                    I am <span className="text-white">Gopal Bajpai</span>, a specialized video editor dedicated to turning complex narratives into cinematic reality.
                                 </p>
-                                <div className="flex flex-wrap gap-4">
-                                    <a href="#work" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2 group shadow-xl shadow-blue-600/20">
-                                        View Showreel <Icon name="play" className="w-4 h-4 fill-current group-hover:translate-x-1 transition-transform" />
+                                <div className="flex flex-wrap gap-5">
+                                    <a href="#work" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
+                                        View Portfolio <i data-lucide="arrow-right" className="w-5 h-5"></i>
                                     </a>
-                                    <a href={whatsappUrl} target="_blank" className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2">
-                                        <Icon name="message-circle" className="w-5 h-5 text-green-500" /> WhatsApp Me
-                                    </a>
+                                    <div className="flex -space-x-3 items-center">
+                                        {[1,2,3,4].map(i => (
+                                            <div key={i} className="w-10 h-10 rounded-full border-2 border-[#050505] bg-gray-800 overflow-hidden">
+                                                <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="client" />
+                                            </div>
+                                        ))}
+                                        <span className="pl-6 text-sm text-gray-400 font-bold">Trusted by 50+ Creators</span>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="relative">
-                                <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl group">
+                            
+                            <div className="relative reveal visible delay-300">
+                                <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden border border-white/10 glass p-4 relative group">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
                                     <img 
                                         src="profile.jpeg" 
-                                        alt="Gopal Bajpai - Video Editor"
-                                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
-                                        onError={(e) => {
-                                            e.target.src = "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&q=80&w=1000";
-                                        }}
+                                        alt="Gopal" 
+                                        className="w-full h-full object-cover rounded-[2rem] grayscale group-hover:grayscale-0 transition-all duration-1000"
+                                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800'; }}
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-60"></div>
-                                    <div className="absolute bottom-6 left-6 right-6 p-6 glass-card rounded-2xl text-center">
-                                        <p className="text-sm font-bold text-white uppercase tracking-widest mb-1">Gopal Bajpai</p>
-                                        <p className="text-xs text-gray-400">Professional Video Editor</p>
-                                    </div>
-                                </div>
-                                <div className="absolute -right-8 top-12 bg-blue-600 p-4 rounded-2xl shadow-xl hidden lg:block transform rotate-6 border border-white/10">
-                                    <div className="text-2xl font-bold">50+</div>
-                                    <div className="text-[10px] uppercase tracking-tighter opacity-80">Projects Completed</div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Services Grid */}
-                    <section className="py-20 border-y border-white/5 bg-white/[0.01]">
-                        <div className="max-w-6xl mx-auto px-6">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                                {services.map((service, i) => (
-                                    <div key={i} className="flex flex-col items-center text-center group">
-                                        <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-blue-600/20 group-hover:text-blue-500 transition-all duration-300 border border-white/5 group-hover:border-blue-500/30">
-                                            <Icon name={service.icon} />
+                                    <div className="absolute bottom-10 left-10 z-20">
+                                        <div className="flex items-center gap-4 bg-black/60 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                                            <div>
+                                                <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Now Editing</p>
+                                                <p className="text-sm font-bold">High-Retention Reels</p>
+                                            </div>
                                         </div>
-                                        <h3 className="font-bold text-sm tracking-wide group-hover:text-blue-400 transition-colors">{service.title}</h3>
                                     </div>
-                                ))}
+                                </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Clients Section */}
-                    <section id="clients" className="py-32 relative">
-                        <div className="max-w-6xl mx-auto px-6">
-                            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                                <div>
-                                    <h2 className="text-4xl font-black mb-4">Trusted By.</h2>
-                                    <p className="text-gray-400">Collaborating with schools and digital agencies to deliver quality content.</p>
+                    {/* Stats */}
+                    <section className="py-20 border-y border-white/5 bg-white/[0.01]">
+                        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                            {stats.map((stat, i) => (
+                                <div key={i} className="reveal">
+                                    <h3 className="text-5xl font-black mb-2">{stat.value}</h3>
+                                    <p className="text-gray-500 uppercase tracking-widest text-xs font-bold">{stat.label}</p>
                                 </div>
-                                <div className="h-px flex-1 bg-white/10 mx-10 hidden md:block mb-5"></div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Projects Section */}
+                    <section id="work" className="py-32">
+                        <div className="max-w-7xl mx-auto px-8">
+                            <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                                <div className="reveal">
+                                    <h2 className="text-5xl md:text-6xl font-black mb-6">SELECTED <br/><span className="text-gradient">WORKS.</span></h2>
+                                    <p className="text-gray-400 max-w-md">A showcase of commercial projects, high-energy edits, and cinematic storytelling.</p>
+                                </div>
+                                <div className="flex gap-4 reveal">
+                                    <button className="px-6 py-3 rounded-full border border-white/10 hover:border-white/40 transition-colors text-sm font-bold">Showreel 2024</button>
+                                </div>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-8">
-                                {clients.map((client, i) => (
-                                    <a 
-                                        key={i} 
-                                        href={client.link} 
-                                        target="_blank" 
-                                        className="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-blue-500/50 hover:bg-white/10 transition-all shadow-xl hover:shadow-blue-600/5"
-                                    >
-                                        <div className="flex justify-between items-start mb-6">
-                                            <div className="bg-blue-600/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-blue-500/20">
-                                                {client.type}
-                                            </div>
-                                            <Icon name="external-link" className="w-5 h-5 text-gray-500 group-hover:text-blue-400 transition-colors" />
-                                        </div>
-                                        <h3 className="text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors">{client.name}</h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed">{client.description}</p>
-                                        <div className="mt-6 flex items-center gap-2 text-xs font-bold text-white group-hover:translate-x-2 transition-transform">
-                                            VIEW ON INSTAGRAM <Icon name="chevron-right" className="w-3 h-3" />
-                                        </div>
-                                    </a>
-                                ))}
+                                <ProjectCard title="Rapyd Launch Promo" category="Startup Marketing" delay="0" />
+                                <ProjectCard title="Cinematic Wedding Recap" category="Event Highlights" delay="100" />
+                                <ProjectCard title="Educational Series" category="SPS Global School" delay="200" />
+                                <ProjectCard title="Brand Storytelling" category="Corporate Identity" delay="300" />
                             </div>
                         </div>
                     </section>
 
-                    {/* Showcase Grid */}
-                    <section id="work" className="py-32 bg-white/[0.02]">
-                        <div className="max-w-6xl mx-auto px-6">
-                            <h2 className="text-4xl font-black mb-16 text-center">Featured Work.</h2>
-                            <div className="grid md:grid-cols-3 gap-6">
-                                {[1, 2, 3].map((item) => (
-                                    <div key={item} className="group relative aspect-video bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-blue-500/30 transition-all cursor-pointer">
-                                        <div className="absolute inset-0 flex items-center justify-center z-10">
-                                            <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-all duration-300 shadow-xl shadow-blue-600/40">
-                                                <Icon name="play" className="w-6 h-6 fill-current" />
-                                            </div>
+                    {/* Skills & Tools */}
+                    <section className="py-32 bg-gradient-soft">
+                        <div className="max-w-7xl mx-auto px-8">
+                            <div className="grid lg:grid-cols-2 gap-20 items-center">
+                                <div className="reveal">
+                                    <h2 className="text-5xl font-black mb-8 leading-tight">THE POWER <br/>BEHIND THE <span className="text-blue-500">CUT.</span></h2>
+                                    <p className="text-gray-400 text-lg mb-12 leading-relaxed">
+                                        I utilize the industry's most powerful tools to ensure every frame is polished, every transition is purposeful, and every color is calibrated for maximum impact.
+                                    </p>
+                                    <div className="flex flex-wrap gap-4">
+                                        {tools.map((tool, i) => (
+                                            <span key={i} className="px-6 py-3 rounded-xl glass text-sm font-bold text-gray-300">{tool}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-6 reveal">
+                                    <div className="space-y-6">
+                                        <div className="p-8 rounded-3xl glass border-t border-blue-500/20">
+                                            <i data-lucide="zap" className="text-blue-500 w-10 h-10 mb-6"></i>
+                                            <h4 className="text-xl font-bold mb-2">High Retention</h4>
+                                            <p className="text-sm text-gray-500">Editing specifically designed for social media algorithms.</p>
                                         </div>
-                                        <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
-                                            <span className="text-gray-600 font-mono text-xs italic">Portfolio Item {item}</span>
-                                        </div>
-                                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all">
-                                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 mb-1">CINEMATIC EDIT</p>
-                                            <p className="text-sm font-bold">Project Showcase 2026</p>
+                                        <div className="p-8 rounded-3xl glass">
+                                            <i data-lucide="layers" className="text-purple-500 w-10 h-10 mb-6"></i>
+                                            <h4 className="text-xl font-bold mb-2">Color Grading</h4>
+                                            <p className="text-sm text-gray-500">Professional cinematic looks tailored to your brand mood.</p>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                            <div className="mt-16 text-center">
-                                <p className="text-gray-500 text-sm italic mb-8">Want to see more? Check my Instagram feed.</p>
-                                <a href="https://www.instagram.com/avg.g0pal" target="_blank" className="inline-flex items-center gap-2 text-blue-500 font-bold hover:text-blue-400 transition-colors">
-                                    Explore Full Catalog <Icon name="chevron-right" className="w-4 h-4" />
-                                </a>
+                                    <div className="space-y-6 mt-12">
+                                        <div className="p-8 rounded-3xl glass">
+                                            <i data-lucide="music" className="text-pink-500 w-10 h-10 mb-6"></i>
+                                            <h4 className="text-xl font-bold mb-2">Sound Design</h4>
+                                            <p className="text-sm text-gray-500">Deep atmospheric soundscapes and rhythmic beat-matching.</p>
+                                        </div>
+                                        <div className="p-8 rounded-3xl glass border-t border-green-500/20">
+                                            <i data-lucide="video" className="text-green-500 w-10 h-10 mb-6"></i>
+                                            <h4 className="text-xl font-bold mb-2">4K Delivery</h4>
+                                            <p className="text-sm text-gray-500">Highest quality export standards for all digital platforms.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Footer */}
-                    <footer className="py-24 border-t border-white/10 relative overflow-hidden bg-black">
-                        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12 relative z-10">
-                            <div>
-                                <h2 className="text-4xl font-black mb-6 leading-tight">Let's create something <br/><span className="text-blue-500">unforgettable.</span></h2>
-                                <div className="flex gap-4">
-                                    <a href="https://www.instagram.com/avg.g0pal" target="_blank" className="text-gray-400 hover:text-white transition-colors p-3 bg-white/5 rounded-xl border border-white/5 hover:border-blue-500/30" title="Instagram">
-                                        <Icon name="instagram" />
-                                    </a>
-                                    <a href={whatsappUrl} target="_blank" className="text-gray-400 hover:text-green-500 transition-colors p-3 bg-white/5 rounded-xl border border-white/5 hover:border-green-500/30" title="WhatsApp">
-                                        <Icon name="message-circle" />
-                                    </a>
-                                    <a href="mailto:contact@gopal.com" className="text-gray-400 hover:text-white transition-colors p-3 bg-white/5 rounded-xl border border-white/5 hover:border-blue-500/30" title="Email">
-                                        <Icon name="mail" />
-                                    </a>
+                    {/* Footer / CTA */}
+                    <footer className="pt-32 pb-16 bg-black">
+                        <div className="max-w-7xl mx-auto px-8">
+                            <div className="reveal text-center mb-32">
+                                <h2 className="text-6xl md:text-8xl font-black mb-12 leading-[0.9] tracking-tighter">
+                                    LET'S BUILD <br/>YOUR <span className="text-blue-500">LEGACY.</span>
+                                </h2>
+                                <a href="https://wa.me/919997036033" className="inline-flex items-center gap-4 text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all group">
+                                    hello@gopalbajpai.com 
+                                    <i data-lucide="arrow-up-right" className="w-10 h-10 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform"></i>
+                                </a>
+                            </div>
+
+                            <div className="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-white/5 gap-8">
+                                <div className="text-center md:text-left">
+                                    <p className="text-xs font-black uppercase tracking-[0.5em] text-gray-600 mb-2">Based in Jaswantnagar, IN</p>
+                                    <p className="text-lg font-bold">Gopal Bajpai &copy; 2024</p>
+                                </div>
+                                <div className="flex gap-8">
+                                    <a href="https://www.instagram.com/avg.g0pal" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="instagram" className="w-6 h-6"></i></a>
+                                    <a href="https://wa.me/919997036033" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="message-circle" className="w-6 h-6"></i></a>
+                                    <a href="#" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="linkedin" className="w-6 h-6"></i></a>
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-gray-500 text-sm mb-1 font-medium uppercase tracking-[0.3em]">Based in India</p>
-                                <p className="text-xl font-black tracking-widest text-white">GOPAL BAJPAI</p>
-                                <p className="text-xs text-gray-400 mt-2 font-mono">+91 99970 36033</p>
-                                <p className="text-[10px] text-gray-600 mt-4 uppercase tracking-[0.1em]">&copy; 2026 All Rights Reserved</p>
-                            </div>
-                        </div>
-                        <div className="absolute -bottom-10 left-0 w-full text-center text-[20vw] font-black text-white/[0.02] leading-none select-none pointer-events-none uppercase tracking-tighter">
-                            Creative
                         </div>
                     </footer>
                 </div>
@@ -274,6 +410,11 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
+
+        // Initialize icons after React render
+        setTimeout(() => {
+            if (window.lucide) window.lucide.createIcons();
+        }, 100);
     </script>
 </body>
 </html>
