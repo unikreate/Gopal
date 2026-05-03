@@ -39,17 +39,13 @@
             -webkit-text-fill-color: transparent; 
         }
 
-        .bg-gradient-soft {
-            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-        }
-
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        .reel-spinning {
-            animation: spin var(--spin-speed, 2s) linear infinite;
+        .rotate-slow {
+            animation: spin 12s linear infinite;
         }
 
         .particle {
@@ -84,45 +80,42 @@
             transform: translateY(0);
         }
 
-        .floating {
-            animation: float 6s ease-in-out infinite;
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+        .animate-scroll {
+            animation: scroll 30s linear infinite;
         }
 
-        /* Hide scrollbar but keep functionality */
-        ::-webkit-scrollbar {
-            width: 4px;
+        .about-border-top {
+            border-top: 1px solid transparent;
+            border-image: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.6), transparent) 1;
         }
-        ::-webkit-scrollbar-track {
-            background: #050505;
+
+        .cinematic-aspect {
+            aspect-ratio: 21 / 9;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #222;
-            border-radius: 10px;
-        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
         
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef, useMemo } = React;
+        const { useState, useEffect, useRef } = React;
 
         const JollyCursor = () => {
             const [position, setPosition] = useState({ x: -100, y: -100 });
             const [isPointer, setIsPointer] = useState(false);
             const [isMouseDown, setIsMouseDown] = useState(false);
-            const [scrollSpeed, setScrollSpeed] = useState(2);
-            const lastScrollY = useRef(0);
 
             useEffect(() => {
                 const handleMove = (e) => {
@@ -133,14 +126,7 @@
                         ['A', 'BUTTON', 'INPUT'].includes(target.tagName) ||
                         target.closest('a') || target.closest('button')
                     );
-                    if (Math.random() > 0.7) createParticle(e.clientX, e.clientY);
-                };
-
-                const handleScroll = () => {
-                    const delta = Math.abs(window.scrollY - lastScrollY.current);
-                    setScrollSpeed(Math.max(0.1, 2 - (delta / 40)));
-                    lastScrollY.current = window.scrollY;
-                    setTimeout(() => setScrollSpeed(2), 150);
+                    if (Math.random() > 0.8) createParticle(e.clientX, e.clientY);
                 };
 
                 const createParticle = (x, y) => {
@@ -160,36 +146,58 @@
                 };
 
                 window.addEventListener('mousemove', handleMove);
-                window.addEventListener('scroll', handleScroll);
                 window.addEventListener('mousedown', () => setIsMouseDown(true));
                 window.addEventListener('mouseup', () => setIsMouseDown(false));
-                
-                return () => {
-                    window.removeEventListener('mousemove', handleMove);
-                    window.removeEventListener('scroll', handleScroll);
-                };
+                return () => window.removeEventListener('mousemove', handleMove);
             }, []);
 
             return (
                 <div id="vintage-cursor" style={{ 
-                    transform: `translate(${position.x - 30}px, ${position.y - 30}px) scale(${isMouseDown ? 0.8 : (isPointer ? 1.3 : 1)})`,
-                    '--spin-speed': `${scrollSpeed}s`
+                    transform: `translate(${position.x - 30}px, ${position.y - 30}px) scale(${isMouseDown ? 0.8 : (isPointer ? 1.3 : 1)})`
                 }}>
                     <svg viewBox="0 0 100 100" className="w-full h-full fill-white drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]">
                         <rect x="25" y="45" width="45" height="30" rx="3" />
                         <path d="M70 50 L85 40 L85 80 L70 70 Z" />
-                        <g className="reel-spinning" style={{ transformOrigin: '38px 32px' }}>
-                            <circle cx="38" cy="32" r="16" fill="none" stroke="white" strokeWidth="2" strokeDasharray="4 2" />
-                            <circle cx="38" cy="32" r="3" />
-                        </g>
-                        <g className="reel-spinning" style={{ transformOrigin: '62px 36px' }}>
-                            <circle cx="62" cy="36" r="12" fill="none" stroke="white" strokeWidth="2" strokeDasharray="3 2" />
-                            <circle cx="62" cy="36" r="2" />
-                        </g>
+                        <circle cx="38" cy="32" r="16" fill="none" stroke="white" strokeWidth="2" strokeDasharray="4 2" className="animate-[spin_4s_linear_infinite]" style={{ transformOrigin: '38px 32px' }} />
+                        <circle cx="62" cy="36" r="12" fill="none" stroke="white" strokeWidth="2" strokeDasharray="3 2" className="animate-[spin_3s_linear_infinite]" style={{ transformOrigin: '62px 36px' }} />
                     </svg>
                 </div>
             );
         };
+
+        const MarqueeStrap = () => (
+            <div className="relative py-4 bg-yellow-400 overflow-hidden select-none border-y border-black/10">
+                <div className="flex animate-scroll whitespace-nowrap">
+                    {[1, 2].map((i) => (
+                        <div key={i} className="flex items-center gap-8 px-4">
+                            {["Video Editing", "Cinematography", "Color Grading", "Motion Graphics", "Sound Design", "VFX"].map((service, index) => (
+                                <div key={index} className="flex items-center gap-8">
+                                    <span className="text-black font-black text-xl uppercase tracking-tighter italic">{service}</span>
+                                    <i data-lucide="sparkle" className="w-6 h-6 text-black fill-current"></i>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const RotatingBadge = () => (
+            <div className="absolute -top-12 -right-12 w-48 h-48 z-30 pointer-events-none select-none lg:flex hidden items-center justify-center">
+                <svg className="w-full h-full rotate-slow" viewBox="0 0 200 200">
+                    <defs>
+                        <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
+                    </defs>
+                    <text className="fill-blue-500 text-[14px] font-black uppercase tracking-[0.3em]">
+                        <textPath href="#circlePath">
+                            Video Editor • Video grapher •&nbsp;
+                            Video Editor • Video grapher •&nbsp;
+                        </textPath>
+                    </text>
+                </svg>
+                <div className="absolute w-3 h-3 bg-white rounded-full shadow-[0_0_15px_white]"></div>
+            </div>
+        );
 
         const Nav = ({ scrolled }) => (
             <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'py-4 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5' : 'py-8 bg-transparent'}`}>
@@ -199,32 +207,27 @@
                     </div>
                     <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold uppercase tracking-widest text-gray-400">
                         <a href="#about" className="hover:text-white transition-colors">About</a>
-                        <a href="#reels" className="hover:text-white transition-colors">Reel Mastery</a>
-                        <a href="#skills" className="hover:text-white transition-colors">Skills</a>
-                        <a href="https://wa.me/919997036033" className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:-translate-y-0.5">Let's Collaborate</a>
+                        <a href="#cinematic" className="hover:text-white transition-colors">Cinematic</a>
+                        <a href="#reels" className="hover:text-white transition-colors">Reels</a>
+                        <a href="https://wa.me/919997036033" className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:-translate-y-0.5">Contact</a>
                     </div>
                 </div>
             </nav>
         );
 
-        const ReelLinkCard = ({ link, title, category, delay }) => (
-            <a 
-                href={link} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={`reveal glass p-6 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all duration-500 delay-${delay}`}
-            >
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
-                        <i data-lucide="play" className="w-5 h-5 fill-current"></i>
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{category}</p>
-                        <h4 className="font-bold text-sm leading-tight group-hover:text-blue-400 transition-colors">{title}</h4>
-                    </div>
+        const CinematicCard = ({ title, category, video, delay, isWide = false }) => (
+            <div className={`reveal group relative rounded-[2.5rem] overflow-hidden glass transition-all duration-700 delay-${delay} ${isWide ? 'cinematic-aspect md:col-span-2' : 'aspect-video'}`}>
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-all duration-500 z-10" />
+                <video 
+                    src={video} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-[1.01]"
+                    autoPlay loop muted playsInline
+                />
+                <div className="absolute bottom-0 left-0 p-10 z-20 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3">{category}</p>
+                    <h3 className="text-3xl font-black tracking-tight">{title}</h3>
                 </div>
-                <i data-lucide="external-link" className="w-4 h-4 text-gray-700 group-hover:text-white transition-colors"></i>
-            </a>
+            </div>
         );
 
         const App = () => {
@@ -233,265 +236,164 @@
             useEffect(() => {
                 const handleScroll = () => {
                     setScrolled(window.scrollY > 50);
-                    
-                    const reveals = document.querySelectorAll('.reveal');
-                    reveals.forEach(el => {
-                        const rect = el.getBoundingClientRect();
-                        if (rect.top < window.innerHeight * 0.9) el.classList.add('visible');
+                    document.querySelectorAll('.reveal').forEach(el => {
+                        if (el.getBoundingClientRect().top < window.innerHeight * 0.9) el.classList.add('visible');
                     });
                 };
-                
                 window.addEventListener('scroll', handleScroll);
                 handleScroll();
+                if (window.lucide) window.lucide.createIcons();
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            const stats = [
-                { label: "Projects Completed", value: "150+" },
-                { label: "Global Clients", value: "12+" },
-                { label: "Experience", value: "Since 2023" }
-            ];
-
             const tools = [
-                { name: "Adobe Premiere Pro", icon: "video", color: "text-blue-400" },
-                { name: "After Effects", icon: "layers", color: "text-purple-500" },
-                { name: "DaVinci Resolve", icon: "film", color: "text-orange-400" },
-                { name: "Photoshop", icon: "image", color: "text-blue-600" },
                 { name: "CapCut Pro", icon: "scissors", color: "text-white" },
+                { name: "Adobe Premiere", icon: "video", color: "text-blue-400" },
+                { name: "After Effects", icon: "layers", color: "text-purple-500" },
+                { name: "Photoshop", icon: "image", color: "text-blue-600" },
                 { name: "Filmora", icon: "camera", color: "text-green-400" }
             ];
 
             const reelProjects = [
                 { title: "Bhaarat", category: "Cinematic Narrative", link: "https://www.instagram.com/reel/DR03rI7kgQF/" },
                 { title: "Ring Ceremony", category: "Event Highlights", link: "https://www.instagram.com/reel/DPdg3ZqE8Ti/" },
-                { title: "Paan Kunwar School Edit", category: "Educational Series", link: "https://www.instagram.com/reel/DXVabjWEi5W/" },
-                { title: "Free Fire Events", category: "Gaming Montage", link: "https://www.instagram.com/reel/DXmb2unAYWX/" },
-                { title: "Hotel Promotional Video", category: "Commercial", link: "https://www.instagram.com/reel/DW-pgz2kULc/" },
-                { title: "Cinematic Model Shoot", category: "Fashion & Motion", link: "https://www.instagram.com/reel/DT-CVLVgQh0/" },
-                { title: "School Memory Edit", category: "Lifestyle Vlog", link: "https://www.instagram.com/reel/DTHzI41kxRP/" },
-                { title: "Cinematic Dipawali Edit", category: "Seasonal Special", link: "https://www.instagram.com/reel/DQAgXNakxAA/" },
-                { title: "Sweet Special Edits", category: "Creative Highlight", link: "https://www.instagram.com/reel/DWvAMppgRbK/" },
-                { title: "Brij Mithas Promo", category: "Business Spotlight", link: "https://www.instagram.com/reel/DQ5u5-iEpeR/" }
+                { title: "Paan Kunwar School", category: "Education", link: "https://www.instagram.com/reel/DXVabjWEi5W/" },
+                { title: "Free Fire Events", category: "Gaming community", link: "https://www.instagram.com/reel/DXmb2unAYWX/" },
+                { title: "Hotel Promo", category: "Commercial", link: "https://www.instagram.com/reel/DW-pgz2kULc/" },
+                { title: "Model Shoot", category: "Fashion", link: "https://www.instagram.com/reel/DT-CVLVgQh0/" },
+                { title: "School Memory", category: "Lifestyle", link: "https://www.instagram.com/reel/DTHzI41kxRP/" },
+                { title: "Brij Mithas Promo", category: "Food & Brand", link: "https://www.instagram.com/reel/DQ5u5-iEpeR/" }
             ];
+
+            // GitHub Direct Links Placeholder - Replace with your actual GitHub Raw URLs
+            const weddingVideo = "https://raw.githubusercontent.com/username/repo/main/WeddingShoot.mp4"; 
+            const preWeddingVideo = "https://raw.githubusercontent.com/username/repo/main/PreWedding.mp4"; 
 
             return (
                 <div className="selection:bg-blue-500/30">
                     <JollyCursor />
                     <Nav scrolled={scrolled} />
 
-                    {/* Hero Section */}
+                    {/* Hero */}
                     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
                         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full" />
-                        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full" />
-                        
                         <div className="max-w-7xl mx-auto px-8 w-full grid lg:grid-cols-2 gap-16 items-center">
                             <div className="reveal visible">
-                                <div className="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs font-bold uppercase tracking-widest mb-8">
-                                    Available for freelance
-                                </div>
                                 <h1 className="text-7xl md:text-8xl lg:text-9xl font-black leading-[0.85] tracking-tighter mb-8">
-                                    CRAFTING <br />
-                                    <span className="text-gradient">STORIES.</span>
+                                    CINEMA <br />
+                                    <span className="text-gradient">CRAFTED.</span>
                                 </h1>
                                 <p className="text-xl text-gray-400 max-w-lg mb-10 leading-relaxed font-medium">
-                                    I am <span className="text-white">Gopal Bajpai</span>. Since 2023, I have been honing my craft in videography and editing, turning complex narratives into cinematic reality.
+                                    I am <span className="text-white">Gopal Bajpai</span>. Crafting high-impact narratives since 2023 for agencies, brands, and communities.
                                 </p>
                                 <div className="flex flex-wrap gap-5">
-                                    <a href="#reels" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
-                                        View Reel Mastery <i data-lucide="arrow-right" className="w-5 h-5"></i>
+                                    <a href="#cinematic" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
+                                        Recent Works <i data-lucide="play" className="w-5 h-5"></i>
                                     </a>
                                     <div className="flex -space-x-3 items-center">
                                         {[
-                                            { src: "IMG_3544.jpg", alt: "Client 1" },
-                                            { src: "IMG_3543.PNG", alt: "Client 2" },
-                                            { src: "IMG_3547.PNG", alt: "Client 3" }
+                                            { src: "IMG_3544.jpg" },
+                                            { src: "IMG_3543.PNG" },
+                                            { src: "IMG_3547.PNG" }
                                         ].map((img, i) => (
-                                            <div key={i} className="w-10 h-10 rounded-full border-2 border-[#050505] bg-gray-800 overflow-hidden">
-                                                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+                                            <div key={i} className="w-12 h-12 rounded-full border-2 border-[#050505] bg-gray-800 overflow-hidden">
+                                                <img src={img.src} alt="Client" className="w-full h-full object-cover" />
                                             </div>
                                         ))}
-                                        <span className="pl-6 text-sm text-gray-400 font-bold">Trusted by 20+ Creators</span>
+                                        <span className="pl-6 text-sm text-gray-500 font-bold">Trusted by 20+ Creators</span>
                                     </div>
                                 </div>
                             </div>
-                            
                             <div className="relative reveal visible delay-300">
-                                <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden border border-white/10 glass p-4 relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+                                <RotatingBadge />
+                                <div className="aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 glass p-4 group">
                                     <img 
                                         src="profile.jpeg" 
-                                        alt="Gopal" 
-                                        className="w-full h-full object-cover rounded-[2rem] grayscale group-hover:grayscale-0 transition-all duration-1000"
-                                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800'; }}
+                                        className="w-full h-full object-cover rounded-[2.5rem] grayscale group-hover:grayscale-0 transition-all duration-1000"
+                                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=800'; }}
                                     />
-                                    <div className="absolute bottom-10 left-10 z-20">
-                                        <div className="flex items-center gap-4 bg-black/60 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-                                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                                            <div>
-                                                <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Now Editing</p>
-                                                <p className="text-sm font-bold">High-Retention Reels</p>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </section>
+
+                    <MarqueeStrap />
 
                     {/* About Section */}
-                    <section id="about" className="py-32 relative overflow-hidden">
+                    <section id="about" className="py-32 about-border-top">
                         <div className="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-20 items-center">
                             <div className="reveal">
-                                <div className="flex items-center gap-3 mb-8">
-                                    <div className="w-12 h-[1px] bg-blue-500"></div>
-                                    <span className="text-xs font-black uppercase tracking-[0.4em] text-blue-500">My Story</span>
-                                </div>
-                                <h2 className="text-5xl md:text-6xl font-black mb-8 leading-[1.1]">FROM CURIOSITY <br/>TO <span className="text-gradient">CREATION.</span></h2>
-                                <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
-                                    <p>
-                                        My journey into the world of pixels and pacing began in late 2023. It wasn't a planned career path—it was sparked by pure <span className="text-white font-bold italic">curiosity</span> while watching creators work offline.
-                                    </p>
-                                    <p>
-                                        What started as simple observation quickly turned into a joyful, high-energy ride. I dove headfirst into the field, navigating the inevitable ups and downs with a passion for every cut, color, and keyframe.
-                                    </p>
-                                    <p>
-                                        Today, I collaborate with <span className="text-white font-bold">agencies</span>, craft visual identities for <span className="text-white font-bold">restaurants</span>, and have had the incredible opportunity to work within the <span className="text-white font-bold">Free Fire community</span> and the "Gram App" creators. Every project is a new opportunity to turn a "joyful ride" into a professional masterpiece.
-                                    </p>
+                                <div className="inline-block px-4 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 text-xs font-black uppercase tracking-widest mb-8">My Journey</div>
+                                <h2 className="text-5xl md:text-6xl font-black mb-10 leading-tight">CURIOSITY STARTED <br/>A <span className="text-gradient">JOYFUL RIDE.</span></h2>
+                                <div className="space-y-6 text-gray-400 text-lg leading-relaxed font-medium">
+                                    <p>I started in Q4 2023. It wasn't planned—I saw people working offline and got curious. That spark turned into a full-blown passion for visual storytelling.</p>
+                                    <p>I've navigated the ups and downs of the creative world, working with <span className="text-white">agencies</span>, <span className="text-white">restaurants</span>, and even collaborating with the <span className="text-white">FF community</span> and the <span className="text-white">Gram App</span>.</p>
+                                    <p>My toolkit? It's a mix of precision and creativity using <span className="text-blue-400 italic">Adobe Premiere</span>, <span className="text-purple-400 italic">After Effects</span>, <span className="italic">CapCut Pro</span>, and <span className="text-blue-600 italic">Photoshop</span>.</p>
                                 </div>
                             </div>
-                            <div className="reveal delay-200">
-                                <div className="relative p-10 glass rounded-[3rem] border border-white/5">
-                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 blur-[80px] rounded-full floating"></div>
-                                    <h3 className="text-2xl font-black mb-10 flex items-center gap-4">
-                                        <i data-lucide="compass" className="text-blue-500"></i> Milestones
-                                    </h3>
-                                    <div className="space-y-8">
-                                        {[
-                                            { year: "2023", title: "The Spark", desc: "First offline inspiration and start of the self-taught journey." },
-                                            { year: "2024", title: "Global Reach", desc: "Collaborating with FF Community and restaurant agencies." },
-                                            { year: "Future", title: "Visual Legacy", desc: "Continuously pushing boundaries in high-retention storytelling." }
-                                        ].map((milestone, i) => (
-                                            <div key={i} className="flex gap-6 group">
-                                                <div className="text-blue-500 font-black text-sm pt-1">{milestone.year}</div>
-                                                <div>
-                                                    <h4 className="font-bold text-lg mb-1 group-hover:text-blue-400 transition-colors">{milestone.title}</h4>
-                                                    <p className="text-gray-500 text-sm">{milestone.desc}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                            <div className="grid grid-cols-2 gap-4 reveal delay-200">
+                                {tools.map((tool, i) => (
+                                    <div key={i} className="p-8 glass rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all group hover:-translate-y-2">
+                                        <i data-lucide={tool.icon} className={`w-10 h-10 mb-6 ${tool.color}`}></i>
+                                        <h4 className="text-lg font-black">{tool.name}</h4>
+                                        <p className="text-xs text-gray-500 font-bold uppercase mt-2">Proficient</p>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Stats Section */}
-                    <section className="py-20 border-y border-white/5 bg-white/[0.01]">
-                        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                            {stats.map((stat, i) => (
-                                <div key={i} className="reveal">
-                                    <h3 className="text-5xl font-black mb-2">{stat.value}</h3>
-                                    <p className="text-gray-500 uppercase tracking-widest text-xs font-bold">{stat.label}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Short-Form / Reels Section */}
-                    <section id="reels" className="py-32 bg-white/[0.01]">
-                        <div className="max-w-7xl mx-auto px-8">
-                            <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-                                <div className="reveal">
-                                    <h2 className="text-5xl md:text-6xl font-black mb-6">REEL <br/><span className="text-gradient">MASTERY.</span></h2>
-                                    <p className="text-gray-400 max-w-md">High-retention vertical content engineered for social engagement and visual rhythm.</p>
-                                </div>
-                                <div className="flex gap-4 reveal">
-                                    <div className="px-6 py-3 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 text-xs font-black uppercase tracking-[0.2em]">
-                                        Full Showcase
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {reelProjects.map((project, i) => (
-                                    <ReelLinkCard key={i} link={project.link} title={project.title} category={project.category} delay={i * 50} />
                                 ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* Skills & Tools Section */}
-                    <section id="skills" className="py-32 bg-gradient-soft">
+                    {/* Cinematic Works */}
+                    <section id="cinematic" className="py-32 bg-white/[0.01]">
                         <div className="max-w-7xl mx-auto px-8">
-                            <div className="grid lg:grid-cols-2 gap-20 items-center">
-                                <div className="reveal">
-                                    <h2 className="text-5xl font-black mb-8 leading-tight">TECHNICAL <br/>POWER <span className="text-blue-500">STACK.</span></h2>
-                                    <p className="text-gray-400 text-lg mb-12 leading-relaxed">
-                                        Over the course of my journey, I've mastered a suite of professional tools. From quick high-impact edits in CapCut to complex motion graphics in After Effects.
-                                    </p>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {tools.map((tool, i) => (
-                                            <div key={i} className="flex items-center gap-4 glass p-4 rounded-2xl hover:border-blue-500/30 transition-all group">
-                                                <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 ${tool.color}`}>
-                                                    <i data-lucide={tool.icon} className="w-5 h-5"></i>
-                                                </div>
-                                                <span className="font-bold text-sm">{tool.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-6 reveal">
-                                    <div className="space-y-6">
-                                        <div className="p-8 rounded-3xl glass border-t border-blue-500/20">
-                                            <i data-lucide="zap" className="text-blue-500 w-10 h-10 mb-6"></i>
-                                            <h4 className="text-xl font-bold mb-2">High Retention</h4>
-                                            <p className="text-sm text-gray-500">Fast-paced editing designed for social algorithms.</p>
-                                        </div>
-                                        <div className="p-8 rounded-3xl glass">
-                                            <i data-lucide="layers" className="text-purple-500 w-10 h-10 mb-6"></i>
-                                            <h4 className="text-xl font-bold mb-2">Color Grading</h4>
-                                            <p className="text-sm text-gray-500">Cinematic looks tailored to your unique mood.</p>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-6 mt-12">
-                                        <div className="p-8 rounded-3xl glass">
-                                            <i data-lucide="music" className="text-pink-500 w-10 h-10 mb-6"></i>
-                                            <h4 className="text-xl font-bold mb-2">Sound Design</h4>
-                                            <p className="text-sm text-gray-500">Atmospheric soundscapes and rhythmic matching.</p>
-                                        </div>
-                                        <div className="p-8 rounded-3xl glass border-t border-green-500/20">
-                                            <i data-lucide="video" className="text-green-500 w-10 h-10 mb-6"></i>
-                                            <h4 className="text-xl font-bold mb-2">4K Delivery</h4>
-                                            <p className="text-sm text-gray-500">Highest quality export standards for all platforms.</p>
-                                        </div>
-                                    </div>
-                                </div>
+                            <h2 className="text-5xl md:text-6xl font-black mb-20">CINEMATIC <br/><span className="text-gradient">WORKS.</span></h2>
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <CinematicCard title="Wedding Cinematic Shoot" category="Wedding Films" video={weddingVideo} delay="0" />
+                                <CinematicCard title="Pre-Wedding Narrative" category="Horizontal Narrative Edit" video={preWeddingVideo} delay="200" isWide={true} />
                             </div>
                         </div>
                     </section>
 
-                    {/* Footer / CTA */}
-                    <footer className="pt-32 pb-16 bg-black">
+                    {/* Reels Mastery */}
+                    <section id="reels" className="py-32">
                         <div className="max-w-7xl mx-auto px-8">
-                            <div className="reveal text-center mb-32">
-                                <h2 className="text-6xl md:text-8xl font-black mb-12 leading-[0.9] tracking-tighter">
-                                    LET'S BUILD <br/>YOUR <span className="text-blue-500">LEGACY.</span>
-                                </h2>
-                                <a href="mailto:gopalbajpai509@gmail.com" className="inline-flex items-center gap-4 text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all group">
-                                    gopalbajpai509@gmail.com 
-                                    <i data-lucide="arrow-up-right" className="w-10 h-10 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform"></i>
-                                </a>
+                            <div className="flex justify-between items-end mb-20">
+                                <h2 className="text-5xl md:text-6xl font-black">REEL <br/><span className="text-gradient">MASTERY.</span></h2>
                             </div>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {reelProjects.map((project, i) => (
+                                    <a key={i} href={project.link} target="_blank" className="reveal glass p-6 rounded-3xl flex items-center justify-between group hover:bg-blue-500 transition-all duration-500">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black">
+                                                <i data-lucide="instagram" className="w-4 h-4"></i>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1 group-hover:text-white/70">{project.category}</p>
+                                                <h4 className="font-bold text-sm leading-tight group-hover:text-white">{project.title}</h4>
+                                            </div>
+                                        </div>
+                                        <i data-lucide="arrow-up-right" className="w-4 h-4 text-gray-700 group-hover:text-white"></i>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
 
-                            <div className="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-white/5 gap-8">
-                                <div className="text-center md:text-left">
-                                    <p className="text-xs font-black uppercase tracking-[0.5em] text-gray-600 mb-2">Based in Jaswantnagar, IN</p>
-                                    <p className="text-lg font-bold">Gopal Bajpai &copy;</p>
+                    {/* Footer */}
+                    <footer className="pt-32 pb-16 bg-black border-t border-white/5">
+                        <div className="max-w-7xl mx-auto px-8">
+                            <div className="text-center mb-32 reveal">
+                                <h2 className="text-6xl md:text-8xl font-black mb-12 tracking-tighter">BUILDING YOUR <br/><span className="text-blue-500 italic">LEGACY.</span></h2>
+                                <a href="mailto:gopalbajpai509@gmail.com" className="text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all border-b-2 border-white/10 pb-4">gopalbajpai509@gmail.com</a>
+                            </div>
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+                                <div>
+                                    <p className="text-xs font-black uppercase tracking-[0.4em] text-gray-600 mb-2">Based in Jaswantnagar, IN</p>
+                                    <p className="font-bold">Gopal Bajpai &copy;</p>
                                 </div>
-                                <div className="flex gap-8">
-                                    <a href="https://www.instagram.com/avg.g0pal" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="instagram" className="w-6 h-6"></i></a>
+                                <div className="flex gap-10">
+                                    <a href="https://www.instagram.com/avg.g0pal?igsh=OTU3MTNoZHZzd2c1" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="instagram" className="w-6 h-6"></i></a>
                                     <a href="https://wa.me/919997036033" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="message-circle" className="w-6 h-6"></i></a>
-                                    <a href="#" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="linkedin" className="w-6 h-6"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -503,9 +405,7 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
-        setTimeout(() => {
-            if (window.lucide) window.lucide.createIcons();
-        }, 100);
+        setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 150);
     </script>
 </body>
 </html>
