@@ -82,7 +82,7 @@
         }
 
         .animate-scroll {
-            animation: scroll 30s linear infinite;
+            animation: scroll 35s linear infinite;
         }
 
         .about-border-top {
@@ -141,14 +141,14 @@
         };
 
         const MarqueeStrap = () => (
-            <div className="relative py-5 bg-yellow-400 overflow-hidden select-none border-y-2 border-black/10 my-10">
+            <div className="relative py-6 bg-yellow-400 overflow-hidden select-none border-y-2 border-black/10 my-16">
                 <div className="flex animate-scroll whitespace-nowrap">
                     {[1, 2].map((i) => (
-                        <div key={i} className="flex items-center gap-12 px-4">
-                            {["Video Editor", "Video grapher", "Cinematography", "Wedding Films", "Reel Mastery", "FF Community Edits", "Digital Creator"].map((service, index) => (
-                                <div key={index} className="flex items-center gap-12">
-                                    <span className="text-black font-black text-2xl uppercase tracking-tighter italic">{service}</span>
-                                    <i data-lucide="sparkle" className="w-8 h-8 text-black fill-current"></i>
+                        <div key={i} className="flex items-center gap-16 px-4">
+                            {["Video Editor", "Video grapher", "Cinematography", "Wedding Films", "Reel Mastery", "Brand Promotions", "Digital Storyteller"].map((service, index) => (
+                                <div key={index} className="flex items-center gap-16">
+                                    <span className="text-black font-black text-3xl uppercase tracking-tighter italic">{service}</span>
+                                    <i data-lucide="sparkle" className="w-10 h-10 text-black fill-current"></i>
                                 </div>
                             ))}
                         </div>
@@ -183,7 +183,8 @@
                     <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold uppercase tracking-widest text-gray-400">
                         <a href="#about" className="hover:text-white transition-colors">About</a>
                         <a href="#cinematic" className="hover:text-white transition-colors">Cinematic</a>
-                        <a href="#reels" className="hover:text-white transition-colors">Reels Mastery</a>
+                        <a href="#reels" className="hover:text-white transition-colors">Reels</a>
+                        <a href="#brands" className="hover:text-white transition-colors">Clients</a>
                         <a href="https://wa.me/919997036033" className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:-translate-y-0.5">Contact</a>
                     </div>
                 </div>
@@ -207,22 +208,17 @@
             }, []);
 
             const reelProjects = [
-                { title: "Bhaarat", category: "Cinematic Narrative", link: "https://www.instagram.com/reel/DR03rI7kgQF/" },
-                { title: "Ring Ceremony", category: "Event Highlights", link: "https://www.instagram.com/reel/DPdg3ZqE8Ti/" },
-                { title: "Paan Kunwar School", category: "Educational Edit", link: "https://www.instagram.com/reel/DXVabjWEi5W/" },
-                { title: "Free Fire Events", category: "Gaming community", link: "https://www.instagram.com/reel/DXmb2unAYWX/" },
-                { title: "Hotel Promo", category: "Restaurant Promo", link: "https://www.instagram.com/reel/DW-pgz2kULc/" },
-                { title: "Model Shoot", category: "Fashion & Style", link: "https://www.instagram.com/reel/DT-CVLVgQh0/" },
-                { title: "School Memory", category: "Lifestyle", link: "https://www.instagram.com/reel/DTHzI41kxRP/" },
-                { title: "Dipawali Edit", category: "Cinematic Special", link: "https://www.instagram.com/reel/DQAgXNakxAA/" },
-                { title: "Sweet Special Edits", category: "Creative Edit", link: "https://www.instagram.com/reel/DWvAMppgRbK/" },
-                { title: "Brij Mithas Promo", category: "Brand Highlight", link: "https://www.instagram.com/reel/DQ5u5-iEpeR/" }
+                { title: "Bhaarat", category: "Cinematic Narrative", icon: "map-pin", link: "https://www.instagram.com/reel/DR03rI7kgQF/" },
+                { title: "Ring Ceremony", category: "Event Highlights", icon: "gem", link: "https://www.instagram.com/reel/DPdg3ZqE8Ti/" },
+                { title: "Paan Kunwar School", category: "Education", icon: "graduation-cap", link: "https://www.instagram.com/reel/DXVabjWEi5W/" },
+                { title: "Free Fire Events", category: "FF Community", icon: "gamepad-2", link: "https://www.instagram.com/reel/DXmb2unAYWX/" },
+                { title: "Hotel Promo", category: "Hospitality", icon: "hotel", link: "https://www.instagram.com/reel/DW-pgz2kULc/" },
+                { title: "Model Shoot", category: "Fashion", icon: "camera", link: "https://www.instagram.com/reel/DT-CVLVgQh0/" },
+                { title: "School Memory", category: "Lifestyle", icon: "heart", link: "https://www.instagram.com/reel/DTHzI41kxRP/" },
+                { title: "Dipawali Edit", category: "Cinematic Special", icon: "sparkles", link: "https://www.instagram.com/reel/DQAgXNakxAA/" },
+                { title: "Sweet Special Edits", category: "Creative Edit", icon: "utensils", link: "https://www.instagram.com/reel/DWvAMppgRbK/" },
+                { title: "Brij Mithas Promo", category: "Brand Story", icon: "tag", link: "https://www.instagram.com/reel/DQ5u5-iEpeR/" }
             ];
-
-            // Using actual uploaded filenames for preview functionality
-            // For GitHub, replace these with: "wedding.mp4" or "https://raw.githubusercontent.com/..."
-            const weddingVideoSrc = "WhatsApp Video 2026-05-03 at 3.46.07 PM.mp4"; 
-            const preWeddingVideoSrc = "WhatsApp Video 2026-05-03 at 3.47.36 PM.mp4"; 
 
             return (
                 <div className="selection:bg-blue-500/30">
@@ -239,11 +235,11 @@
                                     <span className="text-gradient">CRAFTED.</span>
                                 </h1>
                                 <p className="text-xl text-gray-400 max-w-lg mb-10 leading-relaxed font-medium">
-                                    I am <span className="text-white">Gopal Bajpai</span>. Crafting high-impact narratives since Q4 2023 for agencies, communities, and brands.
+                                    I am <span className="text-white font-bold">Gopal Bajpai</span>. Transforming curiosity into visual impact since Q4 2023.
                                 </p>
                                 <div className="flex flex-wrap gap-5">
-                                    <a href="#reels" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
-                                        Recent Work <i data-lucide="arrow-right" className="w-5 h-5"></i>
+                                    <a href="#cinematic" className="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-3">
+                                        View Shoots <i data-lucide="arrow-right" className="w-5 h-5"></i>
                                     </a>
                                     <div className="flex -space-x-3 items-center">
                                         {[
@@ -255,7 +251,7 @@
                                                 <img src={img.src} alt="Client" className="w-full h-full object-cover" />
                                             </div>
                                         ))}
-                                        <span className="pl-6 text-sm text-gray-400 font-bold">Trusted by 20+ Creators</span>
+                                        <span className="pl-6 text-sm text-gray-500 font-bold">Trusted by 20+ Creators</span>
                                     </div>
                                 </div>
                             </div>
@@ -279,69 +275,90 @@
                         <div className="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-20 items-center">
                             <div className="reveal">
                                 <div className="inline-block px-4 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 text-xs font-black uppercase tracking-widest mb-8 text-blue-500">About Me</div>
-                                <h2 className="text-5xl md:text-6xl font-black mb-10 leading-tight text-white">A JOYFUL RIDE <br/>THROUGH <span className="text-gradient">STORYTELLING.</span></h2>
+                                <h2 className="text-5xl md:text-6xl font-black mb-10 leading-tight text-white uppercase tracking-tighter">A JOYFUL RIDE <br/>THROUGH <span className="text-gradient italic">THE LENS.</span></h2>
                                 <div className="space-y-6 text-gray-400 text-lg leading-relaxed font-medium">
-                                    <p>I began my journey in Q4 2023. It wasn't a planned career—I found myself watching creators work offline and felt a surge of curiosity. That spark turned into a deep passion for editing.</p>
-                                    <p>I've embraced every "joyful ride" of ups and downs, eventually landing opportunities to work with <span className="text-white">agencies</span>, <span className="text-white">restaurants</span>, the <span className="text-white font-bold italic">Free Fire community</span>, and creators on the <span className="text-white">Gram App</span>.</p>
-                                    <p>My skillset grew as fast as my curiosity, mastering <span className="text-white">Adobe Premiere Pro</span>, <span className="text-white">After Effects</span>, <span className="text-white">CapCut Pro</span>, <span className="text-white">Filmora</span>, and <span className="text-white">Photoshop</span>.</p>
+                                    <p>My journey began in Q4 2023. It started with simple curiosity while watching people work offline, which quickly evolved into a passion-fueled career.</p>
+                                    <p>From collaborating with <span className="text-white">agencies</span> and <span className="text-white">restaurants</span> to working within the <span className="text-white font-bold italic text-blue-400">Free Fire community</span> and the <span className="text-white font-bold italic text-purple-400">Gram App</span>, it's been an incredible ride of growth and creativity.</p>
+                                    <p>I specialize in crafting high-retention narratives using tools like <span className="text-white">Adobe Premiere Pro, After Effects, Photoshop, CapCut Pro</span> and <span className="text-white">Filmora</span>.</p>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4 reveal delay-200">
                                 {[
-                                    { name: "Premiere Pro", icon: "video", color: "text-blue-400" },
+                                    { name: "Adobe Premiere", icon: "video", color: "text-blue-400" },
                                     { name: "After Effects", icon: "layers", color: "text-purple-400" },
                                     { name: "CapCut Pro", icon: "scissors", color: "text-white" },
                                     { name: "Photoshop", icon: "image", color: "text-blue-600" }
                                 ].map((tool, i) => (
                                     <div key={i} className="p-8 glass rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all group">
-                                        <i data-lucide={tool.icon} className={`w-10 h-10 mb-6 ${tool.color}`}></i>
+                                        <div className={`w-12 h-12 mb-6 flex items-center justify-center rounded-xl bg-white/5 ${tool.color}`}>
+                                            <i data-lucide={tool.icon}></i>
+                                        </div>
                                         <h4 className="text-lg font-black text-white">{tool.name}</h4>
-                                        <p className="text-xs text-gray-500 font-bold uppercase mt-2">Professional</p>
+                                        <p className="text-xs text-gray-500 font-bold uppercase mt-2">Expertise</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* Cinematic Gallery */}
+                    {/* Cinematic Shoots Section */}
                     <section id="cinematic" className="py-32 bg-white/[0.01]">
                         <div className="max-w-7xl mx-auto px-8">
-                            <h2 className="text-5xl md:text-6xl font-black mb-20 text-white">CINEMATIC <br/><span className="text-gradient">WORKS.</span></h2>
-                            <div className="grid md:grid-cols-2 gap-8">
-                                {/* Wedding Shoot */}
-                                <div className="reveal group relative rounded-[2.5rem] overflow-hidden glass aspect-video">
-                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 z-10 transition-all" />
-                                    <video 
-                                        src={weddingVideoSrc} 
-                                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
-                                        autoPlay loop muted playsInline
-                                    />
-                                    <div className="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all">
-                                        <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2">Wedding Films</p>
-                                        <h3 className="text-2xl font-black text-white">Wedding Cinematic Shoot</h3>
+                            <div className="mb-20 reveal text-center">
+                                <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter mb-4">CINEMATIC <span className="text-gradient">SHOOTS</span></h2>
+                                <p className="text-gray-500 font-bold uppercase tracking-[0.3em]">Storytelling in every frame</p>
+                            </div>
+
+                            <div className="space-y-24">
+                                {/* Pre-Wedding Shoot */}
+                                <div className="grid lg:grid-cols-5 gap-12 items-center reveal">
+                                    <div className="lg:col-span-3 rounded-[3rem] overflow-hidden glass aspect-video group">
+                                        <video 
+                                            src="prewedding.mp4" 
+                                            className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                                            autoPlay loop muted playsInline
+                                        />
+                                    </div>
+                                    <div className="lg:col-span-2">
+                                        <h3 className="text-4xl font-black text-white mb-6 uppercase italic tracking-tighter">Pre-Wedding Shoot</h3>
+                                        <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                                            This is my recent cinematic prewedding shoot. I focused on capturing the raw emotion and chemistry between the couple through a cinematic landscape lens.
+                                        </p>
+                                        <div className="flex gap-4">
+                                            <span className="px-4 py-2 rounded-full glass border-blue-500/20 text-blue-400 text-xs font-bold uppercase">Color Graded</span>
+                                            <span className="px-4 py-2 rounded-full glass border-purple-500/20 text-purple-400 text-xs font-bold uppercase">Narrative Cut</span>
+                                        </div>
                                     </div>
                                 </div>
-                                {/* Pre-Wedding Shoot (Forced Horizontal framing) */}
-                                <div className="reveal group relative rounded-[2.5rem] overflow-hidden glass aspect-video">
-                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 z-10 transition-all" />
-                                    <video 
-                                        src={preWeddingVideoSrc} 
-                                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
-                                        autoPlay loop muted playsInline
-                                    />
-                                    <div className="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all">
-                                        <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2">Couples Narrative</p>
-                                        <h3 className="text-2xl font-black text-white">Pre-Wedding Video</h3>
+
+                                {/* Wedding Catering */}
+                                <div className="grid lg:grid-cols-5 gap-12 items-center reveal">
+                                    <div className="lg:col-span-2 lg:order-1 order-2">
+                                        <h3 className="text-4xl font-black text-white mb-6 uppercase italic tracking-tighter text-right">Wedding Catering</h3>
+                                        <p className="text-gray-400 text-lg leading-relaxed mb-8 text-right">
+                                            Catering service wedding cinematic shoot. High-energy visuals designed to showcase service excellence and elegance in grand events.
+                                        </p>
+                                        <div className="flex gap-4 justify-end">
+                                            <span className="px-4 py-2 rounded-full glass border-yellow-500/20 text-yellow-400 text-xs font-bold uppercase">Promotional</span>
+                                            <span className="px-4 py-2 rounded-full glass border-green-500/20 text-green-400 text-xs font-bold uppercase">4K Production</span>
+                                        </div>
+                                    </div>
+                                    <div className="lg:col-span-3 lg:order-2 order-1 rounded-[3rem] overflow-hidden glass aspect-video group">
+                                        <video 
+                                            src="wedding.mp4" 
+                                            className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                                            autoPlay loop muted playsInline
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Reels Mastery */}
+                    {/* Reel Mastery */}
                     <section id="reels" className="py-32">
                         <div className="max-w-7xl mx-auto px-8">
-                            <h2 className="text-5xl md:text-6xl font-black mb-20 text-white">REEL <br/><span className="text-gradient">MASTERY.</span></h2>
+                            <h2 className="text-5xl md:text-6xl font-black mb-20 text-white uppercase italic">REEL <span className="text-gradient">MASTERY.</span></h2>
                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {reelProjects.map((project, i) => (
                                     <a 
@@ -351,8 +368,8 @@
                                         className="reveal glass p-6 rounded-3xl flex items-center justify-between group hover:bg-blue-500 transition-all duration-500"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black">
-                                                <i data-lucide="instagram" className="w-4 h-4 text-white group-hover:text-black"></i>
+                                            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                                                <i data-lucide={project.icon} className="w-5 h-5"></i>
                                             </div>
                                             <div>
                                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1 group-hover:text-white/70">{project.category}</p>
@@ -366,12 +383,39 @@
                         </div>
                     </section>
 
+                    {/* Brands Section */}
+                    <section id="brands" className="py-32 border-t border-white/5">
+                        <div className="max-w-7xl mx-auto px-8">
+                            <div className="text-center mb-16 reveal">
+                                <h2 className="text-4xl font-black text-white uppercase tracking-tighter">Brands I've Worked With</h2>
+                                <div className="w-20 h-1 bg-blue-500 mx-auto mt-4"></div>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center reveal">
+                                {[1, 2, 3, 4, 5, 6].map(i => (
+                                    <div key={i} className="glass p-6 rounded-2xl flex items-center justify-center grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all">
+                                        <img 
+                                            src={`logo${i}.jpeg`} 
+                                            alt={`Brand ${i}`} 
+                                            className="max-h-12 w-auto object-contain"
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = `<span class="text-xs font-bold text-gray-600">Logo ${i}</span>`; }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
                     {/* Footer */}
                     <footer className="pt-32 pb-16 bg-black border-t border-white/5">
                         <div className="max-w-7xl mx-auto px-8">
                             <div className="text-center mb-32 reveal">
                                 <h2 className="text-6xl md:text-8xl font-black mb-12 tracking-tighter text-white">BUILDING YOUR <br/><span className="text-blue-500 italic">LEGACY.</span></h2>
-                                <a href="mailto:gopalbajpai509@gmail.com" className="text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all border-b-2 border-white/10 pb-4 text-white">gopalbajpai509@gmail.com</a>
+                                <a 
+                                    href="mailto:gopalbajpai509@gmail.com" 
+                                    className="text-2xl md:text-4xl font-bold hover:text-blue-500 transition-all border-b-2 border-white/10 pb-4 text-white"
+                                >
+                                    gopalbajpai509@gmail.com
+                                </a>
                             </div>
                             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                                 <div>
@@ -379,8 +423,12 @@
                                     <p className="font-bold text-white">Gopal Bajpai &copy;</p>
                                 </div>
                                 <div className="flex gap-10">
-                                    <a href="https://www.instagram.com/avg.g0pal?igsh=OTU3MTNoZHZzd2c1" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="instagram" className="w-6 h-6"></i></a>
-                                    <a href="https://wa.me/919997036033" target="_blank" className="text-gray-500 hover:text-white transition-colors"><i data-lucide="message-circle" className="w-6 h-6"></i></a>
+                                    <a href="https://www.instagram.com/avg.g0pal?igsh=OTU3MTNoZHZzd2c1" target="_blank" className="text-gray-500 hover:text-white transition-colors">
+                                        <i data-lucide="instagram" className="w-6 h-6"></i>
+                                    </a>
+                                    <a href="https://wa.me/919997036033" target="_blank" className="text-gray-500 hover:text-white transition-colors">
+                                        <i data-lucide="message-circle" className="w-6 h-6"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
